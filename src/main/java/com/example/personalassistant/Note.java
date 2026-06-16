@@ -6,12 +6,9 @@ import java.time.LocalDateTime;
 import java.util.Scanner;
 import java.time.format.DateTimeFormatter;
 
-public class Note {
+public class Note extends Record {
 
-
-    private final String title;
     private final String body;
-    private final LocalDateTime createdAt;
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     public static void main(String[] args){
@@ -28,17 +25,14 @@ public class Note {
     }
 
     public Note(String title, String body) {
-        if (!title.isBlank()) {
-            this.title = title;
-        } else {
-            this.title = "Без названия";
-        }
+
+        super(title);
+
         if (!body.isBlank()) {
             this.body = body;
-        }else {
+        } else {
             this.body = "Пустая заметка.";
         }
-        this.createdAt = LocalDateTime.now();
     }
 
     /*public String getTitle(){
@@ -56,7 +50,8 @@ public class Note {
 
     @Override
     public String toString() {
-        return "Имя заметки: " + title + System.lineSeparator() + "Содержание заметки: " + body + "." + System.lineSeparator()
-                + "Дата создания: " + createdAt.format(FORMATTER) + ".";
+        return "Имя заметки: " + super.getTitle() + System.lineSeparator()
+                + "Содержание заметки: " + body + "." + System.lineSeparator()
+                + "Дата создания: " + super.getFormattedCreatedAt() + ".";
     }
 }

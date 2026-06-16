@@ -1,14 +1,18 @@
 package com.example.personalassistant;
 
-// Author: synthyentzer //
-
 import java.util.ArrayList;
 import java.util.Scanner;
+
+/** Author: synthyentzer */
 
 public class NoteList {
 
     private final ArrayList<Note> notes = new ArrayList<>();
+    public final Archive archive;
 
+    public NoteList(Archive archive){
+        this.archive = archive;
+    }
 
     public void menuNotes(Scanner sc){
 
@@ -40,10 +44,10 @@ public class NoteList {
     }
 
     public void addNote(Scanner sc){
-
         String noteName = MenuMethods.readStr(sc, "Введите имя заметки: ");
         String noteBody = MenuMethods.readStr(sc, "Введите содержание заметки: ");
         notes.add(new Note(noteName, noteBody));
+        archive.addRecord(new Note(noteName, noteBody));
         System.out.println("Заметка добавлена!");
     }
 
@@ -51,8 +55,8 @@ public class NoteList {
         if (notes.isEmpty()){
             System.out.println("Список пуст!");
         } else {
-            for (Note n : notes){
-                System.out.println(n);
+            for (int i = 0; i < notes.size(); i++){
+                System.out.println("Заметка №" + (i+1) + ": " + notes.get(i));
                 System.out.println("-----------------------");
             }
         }

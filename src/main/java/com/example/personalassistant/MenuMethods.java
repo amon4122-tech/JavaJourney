@@ -42,10 +42,11 @@ public class MenuMethods {
         System.out.println("8 - создание задачи =======");
         System.out.println("9 - задачи ================");
         System.out.println("10 - заметки ==============");
+        System.out.println("11 - журнал событий =======");
         System.out.println("0 - выход =================");
     }
 
-    public static void dispatchMenuChoice(int n, Scanner sc, TaskList list, NoteList notes) {
+    public static void dispatchMenuChoice(int n, Scanner sc, TaskList list, NoteList notes, Archive archive) {
         switch (n) {
             case 1 -> Calculate.calc(sc);
             case 2 -> Calculate.multipleTable(sc);
@@ -57,6 +58,7 @@ public class MenuMethods {
             case 8 -> StringMethods.createTask(sc);
             case 9 -> list.menuTasks(sc);
             case 10 -> notes.menuNotes(sc);
+            case 11 -> archive.recordsMainMenu(sc);
             case 0 -> System.out.println("Хорошего дня!");
             default -> System.out.println("Нет такого пункта.");
         }

@@ -3,7 +3,6 @@ package com.example.personalassistant;
 // Author: synthyentzer //
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -12,6 +11,11 @@ import java.util.Scanner;
 public class TaskList {
 
     private final ArrayList<Task> tasks = new ArrayList<>();
+    public final Archive archive;
+
+    public TaskList(Archive archive) {
+        this.archive = archive;
+    }
 
     public void menuTasks(Scanner sc){
 
@@ -29,7 +33,7 @@ public class TaskList {
     public void openTaskMenu(){
         System.out.println("1 — добавить задачу");
         System.out.println("2 — показать все задачи");
-        System.out.println("3 — отметить выполненной (ввести номер)");
+        System.out.println("3 — изменить статус задачи");
         System.out.println("4 — сколько выполнено");
         System.out.println("5 — невыполненные задачи");
         System.out.println("6 — удаление задач");
@@ -43,11 +47,7 @@ public class TaskList {
             switch (n) {
                 case 1 -> addTask(sc);
                 case 2 -> printAll();
-                case 3 -> {
-                    int index = MenuMethods.readInt(sc, "Введите номер задачи: ");
-                    sc.nextLine();
-                    markDone(index);
-                }
+                case 3 -> switchStatus(sc);
                 case 4 -> System.out.println("Выполнено: " + countDone());
                 case 5 -> printPending();
                 case 6 -> deleteTask(sc);
@@ -73,7 +73,7 @@ public class TaskList {
             return;
         }
         for(Task t : tasks){
-            if (!t.isDone()){
+            if (t.getStatus() == Status.IN_PROGRESS || t.getStatus() == Status.NEW){
                 System.out.println(t);
             }
 
@@ -87,6 +87,7 @@ public class TaskList {
         String title = MenuMethods.readStr(sc, "Укажите имя задачи: ");
         String category = MenuMethods.readStr(sc, "Укажите категорию задачи:");
         tasks.add(new Task(title, category));
+        archive.addRecord(new Task(title, category));
         System.out.println("Задача добавлена!");
     }
 
@@ -95,23 +96,15 @@ public class TaskList {
             System.out.println("Список пуст!");
         } else {
             for (int i = 0; i < tasks.size(); i++) {
-                System.out.println("Элемент №" + i + ": " + tasks.get(i));
+                System.out.println("Задача №" + (i+1) + ": " + System.lineSeparator() + tasks.get(i));
             }
-        }
-    }
-
-    public void markDone(int index){
-        if (index < 0 || index >= tasks.size()){
-            System.out.println("Задача с таким номером в списке отсутствует. Повторите ввод.");
-        } else {
-            tasks.get(index).markDone();
         }
     }
 
     public int countDone(){
         int count = 0;
         for (int i = 0; i < tasks.size(); i++){
-            if (tasks.get(i).isDone()){
+            if (tasks.get(i).getStatus() == Status.DONE){
                 count++;
             }
         }
@@ -127,6 +120,31 @@ public class TaskList {
             deleteTaskMeth(choice, sc);
         } while (choice != 0);
 
+    }
+
+    public void switchStatus(Scanner sc){
+
+        if (tasks.isEmpty()){
+            System.out.println("Список задач пуст!");
+            return;
+        }
+
+        int nTask = MenuMethods.readInt(sc, "Введите номер задачи: ");
+        nTask-=1;
+        System.out.println();
+
+        if (nTask < 0 || nTask >= tasks.size()) {
+            System.out.println("Задача с таким номером в списке отсутствует. Повторите ввод.");
+            return;
+        }
+
+        if (tasks.get(nTask).getStatus() == Status.NEW){
+            tasks.get(nTask).setStatus(Status.IN_PROGRESS);
+            System.out.println("Статус задачи изменен! Текущий статус: [В процессе]" );
+        } else {
+            tasks.get(nTask).setStatus(Status.DONE);
+            System.out.println("Статус задачи изменен! Текущий статус: [Завершено]" );
+        }
     }
 
     public void deleteTaskMenu() {
@@ -214,7 +232,7 @@ public class TaskList {
             return;
         }
 
-        Collections.sort(tasks, Comparator.comparing(Task::getTitle));
+        tasks.sort(Comparator.comparing(Task::getTitle));
         System.out.println("Задачи успешно отсортированы по алфавиту");
         printAll();
     }
