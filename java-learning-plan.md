@@ -380,7 +380,7 @@
 - [x] `WarmupMap` — `put`, `get`, `containsKey`, `entrySet`, меню
 - [x] `sc` и `map` в `main`, передача параметрами (без static-полей)
 - [x] Исправлена проверка ключа в `hashGet` (`containsKey(choice)`)
-- [ ] `notes.md` — когда список, когда карта (по желанию)
+- [x] `notes.md` — когда список, когда карта (по желанию)
 
 ---
 
